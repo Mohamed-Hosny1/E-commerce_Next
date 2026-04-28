@@ -4,3 +4,6 @@ export interface BrandI {
   slug: string
   image: string
 }
+export interface BrandPagePropsI {
+  params: { brandId: string };
+}

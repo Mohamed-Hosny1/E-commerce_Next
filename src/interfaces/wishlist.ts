@@ -2,7 +2,13 @@ import { BrandI } from "./brand"
 import { CategoryI } from "./categories"
 import { SubcategoryI } from "./subcategories"
 
-export interface ProductI {
+export interface WishListI {
+  status: string
+  count: number
+  data: WishListDataI[]
+}
+
+export interface WishListDataI {
   sold: number
   images: string[]
   subcategory: SubcategoryI[]
@@ -19,9 +25,12 @@ export interface ProductI {
   ratingsAverage: number
   createdAt: string
   updatedAt: string
+  __v: number
   id: string
 }
-export interface ProductsPropsI {
-  categoryId?: string;
-  BrandId?:string
+export interface WishlistContextI {
+  noOfWishlistItems:number
+  handleWishList():void
+  Loading:boolean
+  
 }

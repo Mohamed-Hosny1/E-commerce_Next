@@ -11,11 +11,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { loginSchema, loginSchemaType } from "@/schema/auth.schema";
-import { loginUser } from "@/survices/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { signIn } from "next-auth/react";
+import { toast } from "sonner";
 
 export default function Login() {
   const router = useRouter();
@@ -27,11 +28,29 @@ export default function Login() {
     },
   });
   async function handleLogin(values: loginSchemaType) {
-    const data = await loginUser(values);
-
-    if (data.message == "success") {
+    // const data = await loginUser(values);
+    // if (data.message == "success") {
+    //   router.push("/products");
+    // }
+    const response = await signIn("credentials", {
+      email: values.email,
+      password: values.password,
+      redirect: false,
+      // callbackUrl: "/products",
+    });
+    if (response?.ok) {
+      toast.success("Logged in successfully ", {
+        position: "top-center",
+        duration: 3000,
+      });
       router.push("/products");
+    } else {
+      toast.error(response?.error, {
+        position: "top-center",
+        duration: 3000,
+      });
     }
+   
   }
   return (
     <>

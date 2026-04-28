@@ -25,15 +25,13 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Heart, ShoppingCart, Star } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Star } from "lucide-react";
 import React from "react";
+import AddToCart from "@/components/products/addToCartBtn";
+import AddToWishList from "@/components/products/addToWishList";
 
-export default async function ProductDetails({
-  params,
-}: {
-  params: Promise<Params>;
-}) {
+
+export default async function ProductDetails({params,}: {params: Promise<Params>;}) {
   const { productId } = await params;
 
   const response = await fetch(
@@ -41,6 +39,12 @@ export default async function ProductDetails({
   );
   const data = await response.json();
   const { data: product } = data as { data: ProductI };
+  const url = await fetch(`https://ecommerce.routemisr.com/api/v1/products?category=${product.category._id}`)
+  const relatedUrl = await url.json()
+  const relatedProducts:ProductI[] = relatedUrl.data 
+  
+  
+
 
   return (
     <>
@@ -118,23 +122,96 @@ export default async function ProductDetails({
                 </p>
               </CardHeader>
               <CardContent>
-                <p className="text-black font-bold text-lg">
+                <p className="font-bold text-lg">
                   EGP {product.price}
                 </p>
               </CardContent>
             </div>
             <div className="w-full">
               <CardFooter className="gap-3  ">
-                <Button className="grow">
-                  <ShoppingCart />
-                  Add to cart
-                </Button>
-                <Heart />
+                <AddToCart prodId={product._id} />
+                <AddToWishList prodId={product._id}/>
               </CardFooter>
             </div>
           </div>
         </Card>
+
+        <div className="mt-15 relative w-full">
+          <h2 className="mb-6 font-bold text-3xl">Related Products </h2>
+          <Carousel opts={{ align: "start",}}
+      className="w-full"
+    >
+      <CarouselContent>
+        {relatedProducts.map((relatedProd , index) => {
+         return(
+          <React.Fragment key={index}>
+            <CarouselItem  className="basis-1/1 md:basis-1/2 lg:lg:basis-1/3 xl:basis-1/5 ">
+            <div className="p-1">
+              <Card className="p-2">
+                      <Link href={`${relatedProd._id}`}>
+                        <Image
+                          width={1000}
+                          height={1000}
+                          src={relatedProd.imageCover}
+                          alt={relatedProd.title}
+                          className="w-full object-cover h-90"
+                        />
+                        <CardHeader>
+                          <h4 className=" text-gray-400 ">
+                            {relatedProd.brand.name}
+                          </h4>
+                          <CardTitle className="text-xl font-bold">
+                            {relatedProd.title.split(" ").slice(0, 2).join(" ")}
+                          </CardTitle>
+                          <CardDescription>
+                            {relatedProd.category.name}
+                          </CardDescription>
+                          <p className="flex gap-1 pt-2">
+                            {[...Array(5)].map((star, index) => {
+                              const filledStar =
+                                index < Math.floor(relatedProd.ratingsAverage);
+                              return (
+                                <React.Fragment key={index}>
+                                  <Star
+                                    className={`${
+                                      filledStar
+                                        ? "text-yellow-400 fill-yellow-400"
+                                        : "text-gray-400 fill-gray-400"
+                                    }`}
+                                  />
+                                </React.Fragment>
+                              );
+                            })}
+
+                            <span className="ms-1">
+                               ({relatedProd.ratingsAverage}) 
+                            </span>
+                          </p>
+                        </CardHeader>
+                        <CardContent>
+                          <p className=" font-bold text-lg">
+                            EGP {relatedProd.price}
+                          </p>
+                        </CardContent>
+                      </Link>
+                      <CardFooter className="gap-3">
+                        <AddToCart prodId={relatedProd._id} />
+                        <AddToWishList prodId={relatedProd._id}/>
+                      </CardFooter>
+                    </Card>
+            </div>
+          </CarouselItem>
+
+          </React.Fragment>
+         ) 
+        })}
+      </CarouselContent>
+      <CarouselPrevious className="absolute -left-4 top-1/2 -translate-y-1/2 z-10 h-12 w-8 rounded-r-md rounded-l-none shadow-md" />
+      <CarouselNext className="absolute -right-4 top-1/2 -translate-y-1/2 z-10 h-12 w-8 rounded-l-md rounded-r-none shadow-md" />
+    </Carousel>
+        </div>
       </div>
+
     </>
   );
 }

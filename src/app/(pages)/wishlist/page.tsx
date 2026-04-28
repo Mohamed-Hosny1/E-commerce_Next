@@ -1,60 +1,34 @@
-import { ProductI, ProductsPropsI } from "@/interfaces/product";
-import React from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import Image from "next/image";
-import { Star } from "lucide-react";
-import Link from "next/link";
-import AddToCart from "@/components/products/addToCartBtn";
-import AddToWishList from "@/components/products/addToWishList";
+"use client"
+import { getLoggedUserWishList } from '@/actions/wishList.action'
+import AddToCart from '@/components/products/addToCartBtn'
+import AddToWishList from '@/components/products/addToWishList'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { WishListDataI } from '@/interfaces/wishlist'
+import { Star } from 'lucide-react'
+import Image from 'next/image'
+import Link from 'next/link'
+import React, { useEffect, useState } from 'react'
+import { toast } from 'sonner'
 
-export default async function Products({ categoryId ,BrandId }: ProductsPropsI) {
-  let url = "https://ecommerce.routemisr.com/api/v1/products"; // default
-
-  if (categoryId) {
-    url = `https://ecommerce.routemisr.com/api/v1/products?category=${categoryId}`;
-  } else if (BrandId) {
-    url = `https://ecommerce.routemisr.com/api/v1/products?brand=${BrandId}`;
+export default function WishList() {
+  const [products, setProducts] = useState<WishListDataI[]>([])
+  async function getUserWishList() {
+   try {
+     const data= await getLoggedUserWishList() 
+    setProducts(data.data)
+    
+   } catch (error) {
+    console.log(error);
+    
+    toast.error("Error Occured", { position: "top-center" });
+   }
   }
 
-  const response = await fetch(url);
-  const data = await response.json();
+  useEffect(() => {
+  getUserWishList()
   
-  const { data: products } = data as { data: ProductI[] };
-
-  if (!products || products.length === 0 && categoryId) {
-  return (
-    <main className="flex flex-col items-center justify-center min-h-100">
-      <div className="mb-5 text-center">
-        <p>😕</p>
-      <h2>There is no Products found in this category</h2>
-      </div>
-      <Link href={"/categories"}>
-      <button className=" p-2  rounded-full bg-black text-white dark:bg-blue-600  ">choose another category</button>
-      </Link>
-    </main>
-  );
-}
-  if (!products || products.length === 0 && BrandId) {
-  return (
-    <main className="flex flex-col items-center justify-center min-h-100">
-      <div className="mb-5 text-center">
-        <p>😕</p>
-      <h2>There is no Products found in this brand</h2>
-      </div>
-      <Link href={"/brands"}>
-      <button className=" p-2  rounded-full bg-black text-white dark:bg-blue-600  ">choose another brand</button>
-      </Link>
-    </main>
-  );
-}
-
+  }, [])
+  
   return (
     <React.Fragment>
       <main>
@@ -106,14 +80,14 @@ export default async function Products({ categoryId ,BrandId }: ProductsPropsI) 
                           </p>
                         </CardHeader>
                         <CardContent>
-                          <p className=" font-bold text-lg">
+                          <p className="text-black font-bold text-lg">
                             EGP {product.price}
                           </p>
                         </CardContent>
                       </Link>
                       <CardFooter className="gap-3">
                         <AddToCart prodId={product._id} />
-                        <AddToWishList prodId={product._id}/>
+                        <AddToWishList prodId={product._id} initialWishlisted={true}/>
                       </CardFooter>
                     </Card>
                   </div>
@@ -124,5 +98,5 @@ export default async function Products({ categoryId ,BrandId }: ProductsPropsI) 
         </div>
       </main>
     </React.Fragment>
-  );
+  )
 }

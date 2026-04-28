@@ -4,3 +4,6 @@ export interface CategoryI {
   slug: string
   image: string
 }
+export interface CategoryPagePropsI {
+  params: { categoryId: string };
+}
