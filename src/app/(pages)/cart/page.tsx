@@ -46,7 +46,7 @@ export default function Cart() {
 
   useEffect(() => {
     getUserCart();
-  });
+  },[getUserCart]);
   if (products.length == 0) {
     return (
       <>
