@@ -6,8 +6,8 @@ import { JWT } from "next-auth/jwt"
 declare module "next-auth" {
   interface User {
     id: string;
-    user: UserDataI;
-    token: string;
+    user?: UserDataI;
+    token?: string;
   }
   interface UserDataI {
     name: string;
@@ -19,7 +19,7 @@ declare module "next-auth" {
 
 declare module "next-auth/jwt" {
   interface JWT {
-   user:UserDataI
+   user?:UserDataI
     idToken?: string
   }
 }

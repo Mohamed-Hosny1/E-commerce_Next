@@ -10,6 +10,7 @@ import { Spinner } from "../ui/spinner";
 import { cartContext } from "@/provider/cart-provider";
 import Image from "next/image";
 
+
 export default function CartItem({
   product,
   setproducts,
