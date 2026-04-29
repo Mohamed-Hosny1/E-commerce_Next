@@ -15,16 +15,20 @@ import { toast } from "sonner";
 export default function Cart() {
   const [products, setproducts] = useState<CartProductI[] | []>([]);
   const [cart, setCart] = useState<CartI | null>(null);
-  
+  const [isFetching, setIsFetching] = useState(true);
 
   const [isLoading, setisLoading] = useState(false);
-  const { noOfCartItems, handleCart ,totalPrice } = useContext(cartContext);
+  const { noOfCartItems, handleCart, totalPrice } = useContext(cartContext);
 
   async function getUserCart() {
-    const data: CartI = await getLoggedUserCart();
-    setproducts(data.data.products);
-    setCart(data);
-  handleCart()
+    try {
+      const data: CartI = await getLoggedUserCart();
+      setproducts(data.data.products);
+      setCart(data);
+      handleCart();
+    } finally {
+      setIsFetching(false);
+    }
   }
   async function clearCartProducts() {
     try {
@@ -38,7 +42,7 @@ export default function Cart() {
       }
       handleCart();
     } catch (error) {
-       toast.error((error as Error).message, { position: "top-center" });
+      toast.error((error as Error).message, { position: "top-center" });
     } finally {
       setisLoading(false);
     }
@@ -46,7 +50,15 @@ export default function Cart() {
 
   useEffect(() => {
     getUserCart();
-  });
+  }, []);
+ if (isFetching) {
+    return (
+      <div className="h-screen flex justify-center items-center">
+        <Spinner />
+      </div>
+    );
+  }
+
   if (products.length == 0) {
     return (
       <>
@@ -90,16 +102,12 @@ export default function Cart() {
                   </p>
                   <p className="flex items-center justify-between">
                     <span>Total cart Price : </span>
-                    <span className="font-semibold ps-1">
-                      {totalPrice} EGP
-                    </span>
+                    <span className="font-semibold ps-1">{totalPrice} EGP</span>
                   </p>
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-sm ">
-                    Shipping
-                  </span>
+                  <span className="text-sm ">Shipping</span>
                   <span className="text-emerald-600 font-medium">Free</span>
                 </div>
               </div>
@@ -112,10 +120,12 @@ export default function Cart() {
               </div>
 
               <Link href="/products">
-              <Button className="w-full text-lg mt-2 " variant={"outline"}>Continue Shopping</Button>
+                <Button className="w-full text-lg mt-2 " variant={"outline"}>
+                  Continue Shopping
+                </Button>
               </Link>
-              
-             {cart && <Checkout cartId={cart?.cartId}/>}
+
+              {cart && <Checkout cartId={cart?.cartId} />}
             </div>
 
             <Button

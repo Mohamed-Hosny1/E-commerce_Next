@@ -1,5 +1,4 @@
 import { BrandI } from '@/interfaces/brand';
-import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react'
 
@@ -19,7 +18,7 @@ export default async function Brands() {
           return <React.Fragment key={brand._id}>
             <div className="p-2 shadow-md text-center bg-white col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-3 hover:scale-110 transition duration-400 ease-in-out dark:bg-amber-500">
             <Link href={`brands/${brand._id}`}>
-          <Image src={brand.image} alt={brand.name} className="  w-40 md:w-full mx-auto" />
+          <img src={brand.image} alt={brand.name} className="  w-40 md:w-full mx-auto" />
           <p className="mt-3 font-semibold text-xl text-blue-700">{brand.name} </p>
             </Link>
         </div>

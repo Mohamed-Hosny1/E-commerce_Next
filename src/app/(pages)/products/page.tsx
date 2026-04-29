@@ -8,7 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import Image from "next/image";
 import { Star } from "lucide-react";
 import Link from "next/link";
 import AddToCart from "@/components/products/addToCartBtn";
@@ -65,8 +64,8 @@ export default async function Products({ categoryId ,BrandId }: ProductsPropsI) 
                 <React.Fragment key={product._id}>
                   <div className="col-span-12 md:col-span-6  lg:col-span-4 xl:col-span-3 hover:scale-105 transition duration-400 ease-in-out">
                     <Card className="p-2">
-                      <Link href={`products/${product._id}`}>
-                        <Image
+                      <Link href={`/products/${product._id}`}>
+                        <img
                           width={1000}
                           height={1000}
                           src={product.imageCover}

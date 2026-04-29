@@ -8,7 +8,6 @@ import {
 import { toast } from "sonner";
 import { Spinner } from "../ui/spinner";
 import { cartContext } from "@/provider/cart-provider";
-import Image from "next/image";
 
 
 export default function CartItem({
@@ -51,7 +50,7 @@ export default function CartItem({
   }
   return (
     <div className="flex gap-4 rounded-xl border p-4 shadow-sm bg-card">
-      <Image
+      <img
         src={product.product.imageCover}
         alt={product.product.title}
         className="w-24 h-24 rounded-lg object-cover md:w-28 md:h-28"

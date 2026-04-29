@@ -3,6 +3,7 @@ import { getLoggedUserWishList } from '@/actions/wishList.action'
 import AddToCart from '@/components/products/addToCartBtn'
 import AddToWishList from '@/components/products/addToWishList'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Spinner } from '@/components/ui/spinner'
 import { WishListDataI } from '@/interfaces/wishlist'
 import { Star } from 'lucide-react'
 import Image from 'next/image'
@@ -12,6 +13,7 @@ import { toast } from 'sonner'
 
 export default function WishList() {
   const [products, setProducts] = useState<WishListDataI[]>([])
+  const [isFetching, setIsFetching] = useState(true);
   async function getUserWishList() {
    try {
      const data= await getLoggedUserWishList() 
@@ -21,6 +23,8 @@ export default function WishList() {
     console.log(error);
     
     toast.error("Error Occured", { position: "top-center" });
+   } finally{
+    setIsFetching(false)
    }
   }
 
@@ -28,6 +32,13 @@ export default function WishList() {
   getUserWishList()
   
   }, [])
+   if (isFetching) {
+    return (
+      <div className="h-screen flex justify-center items-center">
+        <Spinner />
+      </div>
+    );
+  }
   
   return (
     <React.Fragment>

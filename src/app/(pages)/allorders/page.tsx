@@ -1,6 +1,5 @@
 import { getUserOrders } from "@/actions/order.action";
 import { OrderI } from "@/interfaces/oreders";
-import Image from "next/image";
 import React from "react";
 
 export default async function AllOrders() {
@@ -38,7 +37,7 @@ export default async function AllOrders() {
                 {order.cartItems.map((item)=>{
                   return <React.Fragment key={item._id}>
                   <div className="w-35 col-span-12 my-2 md:my-0 mx-auto md:col-span-4 lg:col-span-3 border-4 shadow-sm p-1"  >
-                  <Image src={item.product.imageCover} alt={item.product.title} className="w-full"/>
+                  <img src={item.product.imageCover} alt={item.product.title} className="w-full"/>
                   <h2 className="font-semibold text-green-600">{item.product.title} </h2>
                   <p> count : {item.count} </p>
                   <p > Price : {item.price} * {item.count} <span>= {item.price  * item.count} EGP </span> </p>
