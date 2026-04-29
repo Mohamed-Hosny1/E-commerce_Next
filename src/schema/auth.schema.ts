@@ -3,19 +3,19 @@ export const registerSchema = z
   .object({
     name: z
       .string()
-      .nonempty("Name is Required")
+      .min(1, "Name is Required")
       .min(5, "Name must be at least 5 characters")
       .max(17, "Name must be no exceed 15 characters"),
-    email: z.email("email is invalid").nonempty("email is Required"),
+    email: z.email("email is invalid").min(1,"email is Required"),
     password: z
       .string()
-      .nonempty("password is Required")
+      .min(1,"password is Required")
       .min(6, "password must be at least 8 characters")
       .max(50, "password must not exceed 50 characters"),
-    rePassword: z.string().nonempty("repassword is Required"),
+    rePassword: z.string().min(1,"repassword is Required"),
     phone: z
       .string()
-      .nonempty("Phone number is required")
+      .min(1,"Phone number is required")
       .regex(/^01[0125][0-9]{8}$/, "Phone number must be for Egypt"),
   })
   .refine((data) => data.password === data.rePassword, {
@@ -28,7 +28,7 @@ export const registerSchema = z
   export const loginSchema = z
   .object({
     
-    email: z.email("email is invalid").nonempty("email is Required"),
+    email: z.email("email is invalid").min(1,"email is Required"),
     password: z
       .string()
       .nonempty("password is Required")
