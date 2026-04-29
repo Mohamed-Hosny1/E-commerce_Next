@@ -28,9 +28,10 @@ export interface WishListDataI {
   __v: number
   id: string
 }
+
 export interface WishlistContextI {
-  noOfWishlistItems:number
-  handleWishList():void
-  Loading:boolean
-  
+  noOfWishlistItems: number
+  wishlistedIds: string[]       
+  handleWishList(): void
+  Loading: boolean
 }

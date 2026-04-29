@@ -7,6 +7,7 @@ import { toast } from "sonner";
 
 export const WishListContext = createContext<WishlistContextI>({
   noOfWishlistItems: 0,
+  wishlistedIds: [],
   handleWishList: () => {},
   Loading: false,
 });
@@ -17,6 +18,7 @@ export default function WishListContextProvider({
   children: React.ReactNode;
 }) {
   const [noOfWishlistItems, setNoOfWishlistItems] = useState(0);
+  const [wishlistedIds, setWishlistedIds] = useState<string[]>([]);
   const [Loading, setLoading] = useState(false);
   const { status } = useSession();
 
@@ -25,6 +27,7 @@ export default function WishListContextProvider({
       setLoading(true);
       const data: WishListI = await getLoggedUserWishList();
       setNoOfWishlistItems(data.count);
+      setWishlistedIds(data.data.map((item) => item._id));
     } catch (error) {
       toast.error((error as Error).message, { position: "top-center" });
     } finally {
@@ -37,12 +40,13 @@ export default function WishListContextProvider({
       handleWishList();
     } else {
       setNoOfWishlistItems(0);
+      setWishlistedIds([]);
     }
   }, [status]);
 
   return (
     <WishListContext.Provider
-      value={{ noOfWishlistItems, handleWishList, Loading }}
+      value={{ noOfWishlistItems, wishlistedIds, handleWishList, Loading }}
     >
       {children}
     </WishListContext.Provider>

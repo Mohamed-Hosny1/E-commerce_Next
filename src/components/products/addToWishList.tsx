@@ -6,20 +6,19 @@ import { redirect } from "next/navigation";
 import { addToWishList, DeleteWishListItem } from "@/actions/wishList.action";
 import { WishListContext } from "@/provider/wishlist-provider";
 
-export default function AddToWishList({
-  prodId,
-  initialWishlisted = false,}: {prodId: string; initialWishlisted?: boolean;}) {
+export default function AddToWishList({ prodId }: { prodId: string }) {
   const [isLoading, setIsLoading] = useState(false);
-  const [isWishlisted, setIsWishlisted] = useState(initialWishlisted);
-  const {handleWishList}=useContext(WishListContext)
+  const { wishlistedIds, handleWishList } = useContext(WishListContext);
+
+  // يتحقق من الـ context مباشرةً — بيتحدث أوتوماتيك مع أي تغيير
+  const isWishlisted = wishlistedIds.includes(prodId);
 
   async function deleteProduct(prodId: string) {
     try {
       setIsLoading(true);
       await DeleteWishListItem(prodId);
-      setIsWishlisted(false);
-      toast.success("Product removed successfully", { position: "top-center" });
-      handleWishList()
+      toast.success("Product removed from wishlist", { position: "top-center" });
+      handleWishList();
     } catch (error) {
       toast.error((error as Error).message, { position: "top-center" });
     } finally {
@@ -31,11 +30,10 @@ export default function AddToWishList({
     try {
       setIsLoading(true);
       const response = await addToWishList(prodId);
-      if (response.status == "success") {
-        setIsWishlisted(true);
+      if (response.status === "success") {
         toast.success(response.message, { position: "top-center" });
       }
-      handleWishList()
+      handleWishList();
     } catch (error) {
       toast.error((error as Error).message, { position: "top-center" });
       redirect("/login");
@@ -47,7 +45,9 @@ export default function AddToWishList({
   return (
     <button
       disabled={isLoading}
-      onClick={() => isWishlisted ? deleteProduct(prodId) : AddProductToWishList(prodId)}
+      onClick={() =>
+        isWishlisted ? deleteProduct(prodId) : AddProductToWishList(prodId)
+      }
       className="transition-transform duration-150 active:scale-90 disabled:opacity-50 disabled:cursor-not-allowed"
       aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
     >
