@@ -11,12 +11,12 @@ export async function getUserToken() {
     ? "__Secure-authjs.session-token"
     : "authjs.session-token";
 
-  const decodedToken = cookieStore.get(cookieName)?.value;
+  const rawToken = cookieStore.get(cookieName)?.value;
 
-  if (!decodedToken) return null;
+  if (!rawToken) return null;
 
   const token = await decode({
-    token: decodedToken,
+    token: rawToken,
     secret: process.env.AUTH_SECRET!,
     salt: cookieName,
   });
